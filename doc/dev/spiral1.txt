@@ -1,0 +1,19 @@
+-- Spiral One --
+
+Objectives:
+ - Create base functionality for talking to the database and the frontend where base functionality is the following:
+   - Basic database query and submit capabilities
+   - Ability to pass queried data to the frontend application
+   - 1-2 API calls that allow the frontend to access these base facilities
+ - Ensure that this base is modular enough to allow new features to be built on top of it.
+
+It is imperative that this base will provide functionality for all future API calls
+
+Risks:
+ - Code must be designed as an abstract interface to the database, so that the next feature will not require rewriting of basic query and submission functionality
+ - Code must be compatible with the expectations of the front end designers
+   - front end designers expect an API that produces a data result or submission
+
+In order to address these risks, the first spiral will undergo cleanup after initial functionality is present. Cleanup will be to ensure compatability of the working code with future design expectations. Additonally, code will conform to the predetermined expectations of the front end designers. This will be in the form of an API call to query and submit data to the database.
+
+Plan for next iteration: TBD
