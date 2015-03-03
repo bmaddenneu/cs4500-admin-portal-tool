@@ -1,4 +1,24 @@
 admin portal tool project for cs4500
 
-TODO:
---
+If you want to test the current functionality, you can transfer all of the files in the "src/" directory to any server hosting a MySQL database. From there you can execute the "main.py" script, with no arguments, to see what the proper usage is.
+
+I'll go over the proper usage right here, in more detail
+
+./main.py [port] [host] [user] [pw] [db]
+
+where args are:
+port: the port you want the server to run on
+host: this should be "localhost" or equivalent - it is the host that the server will listen on
+user: the username for MySQL DB access
+pw: the plaintext password for the MySQL DB user
+db: the name of the MySQL database that the server will hook to
+
+example: "./main.py 10003 localhost user password my_mysql_database_name
+
+After running this command, the server will be listening on the provided port. You can now run the "test.py" script, and the server program will output the contents of the table given in test.py
+
+The current protocol for using the API is to send a TCP/IP packet to the port on the server where "main.py" was executed. The contents of the data portion of the TCP/IP packet should simply be the name of the table you want to see from the database that "main.py" is hooked to.
+
+This is currently the only API call available. Modification to the protocol is absolutely going to happen, so this will not be the final way in which the API is called. Future iterations will likely move the API to be a "RESTful API" using http instead of just the name of the table.
+
+Right now, the API is callable from anywhere on the Internet (assuming that you've started "main.py" on an Internet connected server with an open port).

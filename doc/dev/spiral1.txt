@@ -16,4 +16,7 @@ Risks:
 
 In order to address these risks, the first spiral will undergo cleanup after initial functionality is present. Cleanup will be to ensure compatability of the working code with future design expectations. Additonally, code will conform to the predetermined expectations of the front end designers. This will be in the form of an API call to query and submit data to the database.
 
-Plan for next iteration: TBD
+Plan for next iteration:
+ - Improve the existing protocol for iterfacing with the API
+ - Add more API calls in accordance with the continuing development of the frontend application
+ - Make improvements based on any feedback from the class staff
