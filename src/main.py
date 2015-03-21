@@ -3,11 +3,12 @@
 """
 @author Blakely Madden
 @date 2014-02-24
+@updated 2014-03-19
 @group 16
 @purpose This is the entry point for the server application
 """
 
-import server
+import http_server
 import api
 import sys # argv
 
@@ -15,38 +16,38 @@ def parse_args():
     """
     @author Blakely Madden
     @date 2014-02-24
+    @updated 2014-03-19
     @purpose parse_args parses the command line arguments to the program and
     determines if they are satisfactory inputs
     @args None
-    @return (int, string, string, string, string)
+    @return (int, string, int, string, string, string)
     @exceptions TypeError
-    @implemented True
+    @can_block false
     """
-    if len(sys.argv) != 6: # if there isn't exactly one argument passed in
+    if len(sys.argv) != 7: # if there aren't exactly 6 arguments passed in
         # print a usage message
-        sys.stderr.write("usage: %s [port] [host] [user] [pw] [db]"
+        sys.stderr.write("usage: %s [port] [host] [db_port] [user] [pw] [db]"
                          % sys.argv[0])
         sys.exit(0)
     # return a tuple containing the command line argument formatted for use
-    return (int(sys.argv[1]), sys.argv[2], sys.argv[3], sys.argv[4],
-            sys.argv[5])
+    return (int(sys.argv[1]), sys.argv[2], int(sys.argv[3]), sys.argv[4],
+            sys.argv[5], sys.argv[6])
 
 def start_server(args):
     """
     @author Blakely Madden
     @date 2014-02-24
+    @updated 2014-03-19
     @purpose starts the server and delegates any received call to the api
      handler
-    @args port [int]
+    @args args [tuple]
     @return None
     @exceptions Exception
-    @can_block False
+    @can_block True
     """
-    port, host, user, pw, db = args # unwrap the tuple
-    serv = server.Server(port) # server object
-    api_info = api.APIInfo(host, user, pw, db) # APIInfo data object
-    call = serv.accept_message() # get a message from our server
-    api.api_handler(call, api_info) # reform the API call and execute
+    port, host, api_port, user, pw, db = args # unwrap the tuple
+    api_info = api.APIInfo(host, api_port, user, pw, db)
+    http_server.run(port, api_info)
 
 # main guard 
 if __name__ == "__main__":

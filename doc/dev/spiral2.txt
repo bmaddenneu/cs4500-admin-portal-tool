@@ -1,0 +1,26 @@
+-- Spiral Two --
+
+Objectives:
+ - Discuss API requirements with the front end group
+ - Research and complete the first full API implementation as follows:
+   - Allow querying of a MySQL database over HTTP using a simple get request
+   - Respond with JSON serialized data from the database
+ - Maintain modularity for easy additions and functionality changes
+ - Write tests to ensure expected functionality
+
+Discussion with the front end resulted in the following API structure:
+A call to the API will be of the form of a GET request to the url where the server is started. The path of the GET request should be the name of the table whose contents are desired. Contents are delivered as JSON.
+
+Risks:
+ - I'm inexperienced with so called "RESTful" APIs, so research is needed.
+ - Implementation depends on the requirements of the front end group
+
+Plan for next iteration:
+ - Continue testing for corner cases
+ - Implement any bugfixes resulting from new test info
+ - Conduct minor changes based on feedback from the front end group
+ - Make improvements based on feedback from the class staff
+ - Discuss deployment strategy with client
+ - Get client approval for the result
+ - Do above early so there is time for any last minute changes that the client desires
+ 

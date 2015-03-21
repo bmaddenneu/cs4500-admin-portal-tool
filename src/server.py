@@ -1,3 +1,6 @@
+###### DEPRECATED 2014-03-19
+# this file is deprecated and should not be used. it is kept in the current
+# version in case it is needed again
 """
 @author Blakely Madden
 @date 2014-02-24
@@ -44,8 +47,9 @@ class Server(object):
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.bind(("127.0.0.1", self.port)) # bind it to localhost
             sock.listen(5) # start the socket listening with 5 failure tolerance
-            recv_sock, _  = sock.accept() # blocks until a connection is made to the given port
-            received = recv_sock.recv(MAX_PACKET_SIZE) # return the received message
+            recv_sock, _  = sock.accept() # blocks until a connection is made
+                                          # to the given port
+            received = recv_sock.recv(MAX_PACKET_SIZE) # return the message
         except Exception as e:
             sys.stderr.write(e.message)
         return received
