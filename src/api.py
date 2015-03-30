@@ -91,12 +91,22 @@ def grab_column_data_from_table(table, api_info):
                          api_info.pw, api_info.db) # set up the DB connection
     # get the data for the given table
     try:
+        cols = db.execute_db_command("SHOW COLUMNS FROM %s" % table)
         all_data = db.execute_db_command("SELECT * FROM %s" % table)
     except Exception as e: # we received an invalid table request
         print "Invalid table request: \"%s\" Ignoring... \nError: "\
             % table + e.message
         return ""
+
+    col_names = []
+    for item in cols:
+        col_names.append(item[0])
+
     data = []
-    for row in all_data: # pull out all the rows from this column
-        data.append(row)
+    temp_dict = {}
+    for row in all_data:
+        for col,item in zip(col_names,row):
+            temp_dict[col] = item
+        data.append(temp_dict)
+        temp_dict = {}
     return data
