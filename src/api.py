@@ -72,11 +72,51 @@ def api_handler(data, api_info):
     @exceptions None
     @can_block False
     """
-    table = data.strip()
-    table = data.strip('/')
-    return grab_column_data_from_table(table, api_info)
+    info = data.strip()
+    info = info.strip('/')
+    info = info.split('/')
+    db = db_hooks.DBHook(api_info.host, api_info.port, api_info.user,
+                         api_info.pw, api_info.db) # set up the DB connection
+    table = info[0]
+    try: # get the column data that we need to make JSON objects
+        cols = db.execute_db_command("SHOW COLUMNS FROM %s" % table)
+    except Exception as e:
+        invalid_request(table, e)
 
-def grab_column_data_from_table(table, api_info):
+    col_names = []
+    for item in cols:
+        col_names.append(item[0])
+
+    if len(info) == 1:
+        return grab_column_data_from_table(table, col_names, api_info, db)
+    if len(info) == 3:
+        return grab_row_field_table(table, info[1], info[2], col_names, api_info, db)
+
+def invalid_request(table, exception):
+    print "Invalid table request: \"%s\" Ignoring... \nError: "\
+        % table + exception.message
+    return ""
+
+def make_json_objs (all_data, cols):
+    data = []
+    temp_dict = {}
+    for row in all_data:
+        for col,item in zip(cols, row):
+            temp_dict[col] = item
+        data.append(temp_dict)
+        temp_dict = {}
+    return data
+
+def grab_row_field_table(table, field, val, cols, api_info, db):
+    try:
+        row_data = db.execute_db_command("SELECT * FROM %s WHERE %s = %s"
+                                         %(table, field, val))
+    except Exception as e:
+        invalid_request (table, e)
+
+    return make_json_objs (row_data, cols)
+
+def grab_column_data_from_table(table, cols, api_info, db):
     """
     @author Blakely Madden
     @date 2014-02-24
@@ -87,26 +127,10 @@ def grab_column_data_from_table(table, api_info):
     @exceptions None
     @can_block False
     """
-    db = db_hooks.DBHook(api_info.host, api_info.port, api_info.user,
-                         api_info.pw, api_info.db) # set up the DB connection
     # get the data for the given table
     try:
-        cols = db.execute_db_command("SHOW COLUMNS FROM %s" % table)
         all_data = db.execute_db_command("SELECT * FROM %s" % table)
     except Exception as e: # we received an invalid table request
-        print "Invalid table request: \"%s\" Ignoring... \nError: "\
-            % table + e.message
-        return ""
+        invalid_request(table, e)
 
-    col_names = []
-    for item in cols:
-        col_names.append(item[0])
-
-    data = []
-    temp_dict = {}
-    for row in all_data:
-        for col,item in zip(col_names,row):
-            temp_dict[col] = item
-        data.append(temp_dict)
-        temp_dict = {}
-    return data
+    return make_json_objs (all_data, cols)
