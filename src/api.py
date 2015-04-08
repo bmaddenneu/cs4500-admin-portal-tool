@@ -7,10 +7,11 @@
 """
 
 import db_hooks
-import sys
-import json
-import datetime
+
 import calendar
+import datetime
+import json
+import MySQLdb
 
 def default_json_serializer(item):
     """
@@ -72,29 +73,49 @@ def api_handler(data, api_info):
     @exceptions None
     @can_block False
     """
+    # remove whitespace and trailing '/'
+    # split fields separated by '/' and make a list of them
     info = data.strip()
     info = info.strip('/')
     info = info.split('/')
+
+    for i in info: # escape all the strings for use with SQL statements
+        i = MySQLdb.escape_string(i)
+
     db = db_hooks.DBHook(api_info.host, api_info.port, api_info.user,
                          api_info.pw, api_info.db) # set up the DB connection
     table = info[0]
     try: # get the column data that we need to make JSON objects
         cols = db.execute_db_command("SHOW COLUMNS FROM %s" % table)
     except Exception as e:
-        invalid_request(table, e)
+        return invalid_request(table, e)
 
     col_names = []
     for item in cols:
         col_names.append(item[0])
 
     if len(info) == 1:
-        return grab_column_data_from_table(table, col_names, api_info, db)
+        return safe_db_query_to_json (table_rows (table), col_names, db)
+    if len(info) == 2:
+        return safe_db_query_to_json (all_values_in_column (table, info[1]),
+                                      col_names, db)
     if len(info) == 3:
-        return grab_row_field_table(table, info[1], info[2], col_names, api_info, db)
+        return safe_db_query_to_json (rows_matching_table_field_val (table,
+                                                                     info[1],
+                                                                     info[2]),
+                                      col_names, db)
 
-def invalid_request(table, exception):
-    print "Invalid table request: \"%s\" Ignoring... \nError: "\
-        % table + exception.message
+def safe_db_query_to_json (escaped_query, cols, db):
+    try:
+        data = db.execute_db_command(escaped_query)
+    except Exception as e:
+        return invalid_request (escaped_query, e)
+
+    return make_json_objs (data, cols)
+
+def invalid_request(query, exception):
+    print "Invalid SQL query request: \"%s\" Ignoring... \nError: "\
+        % query + exception.message
     return ""
 
 def make_json_objs (all_data, cols):
@@ -107,16 +128,13 @@ def make_json_objs (all_data, cols):
         temp_dict = {}
     return data
 
-def grab_row_field_table(table, field, val, cols, api_info, db):
-    try:
-        row_data = db.execute_db_command("SELECT * FROM %s WHERE %s = %s"
-                                         %(table, field, val))
-    except Exception as e:
-        invalid_request (table, e)
+def all_values_in_column (table, field):
+    return "SELECT %s from %s" % (field, table)
 
-    return make_json_objs (row_data, cols)
+def rows_matching_table_field_val(table, field, val):
+    return "SELECT * FROM %s WHERE %s = %s" % (table, field, val)
 
-def grab_column_data_from_table(table, cols, api_info, db):
+def table_rows(table):
     """
     @author Blakely Madden
     @date 2014-02-24
@@ -127,10 +145,4 @@ def grab_column_data_from_table(table, cols, api_info, db):
     @exceptions None
     @can_block False
     """
-    # get the data for the given table
-    try:
-        all_data = db.execute_db_command("SELECT * FROM %s" % table)
-    except Exception as e: # we received an invalid table request
-        invalid_request(table, e)
-
-    return make_json_objs (all_data, cols)
+    return "SELECT * FROM %s" % table
