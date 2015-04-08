@@ -90,15 +90,15 @@ def api_handler(data, api_info):
     except Exception as e:
         return invalid_request(table, e)
 
-    col_names = []
+    col_names = [] # pull out the actual column names
     for item in cols:
         col_names.append(item[0])
-
+    print info
     if len(info) == 1:
         return safe_db_query_to_json (table_rows (table), col_names, db)
     if len(info) == 2:
         return safe_db_query_to_json (all_values_in_column (table, info[1]),
-                                      col_names, db)
+                                      [info[1]], db)
     if len(info) == 3:
         return safe_db_query_to_json (rows_matching_table_field_val (table,
                                                                      info[1],
