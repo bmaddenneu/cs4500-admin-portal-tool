@@ -1,0 +1,18 @@
+-- Spiral Three --
+
+Objectives:
+ - Finalize API and confirm expected functionality with the front end group and client
+ - Research and implement a MySQL DB stress testing strategy and document the results
+ - Research and implement a mitigation strategy for SQL injection attacks
+ - Refactor code to be more concise in the updated environment
+ - Create updated class diagrams
+ - Create a dependency chart to show inter-file dependency within the project
+ - Consider creating a cache for added functionality and ease of access
+ - Add tests for the new functionality and API calls
+
+Risks:
+ - Stress testing may require extensive research for the appropriate tool
+ - A successful caching strategy must be realized carefully. It is possible to create a very bad strategy that decreases effectiveness of the API
+ - Implementation depends on strong communication with the front end group and the client
+
+Plan for next spiral: This is expected to be the last major spiral

@@ -13,7 +13,10 @@ db: the name of the MySQL database that the server will hook to
 
 example: "./main.py 10003 localhost 3306 user password my_mysql_database_name
 
-After running this command, the server will be listening on the provided port. You can connect to it by sending a get request to that port. The path of the get request should be the name of the table that you want to do a lookup on. The server will then respond with a JSON serialized data representation of the table or the empty string if the table was not found in the DB.
+API Calls:
+ - example.com/[table] : responds wth JSON serialized data representing the entire table in the DB (this is mostly for development and debugging purposes. use sparingly)
+ - example.com/[table]/[column] : responds with JSON serialized data representing the value specified column's value for each row of the table
+ - example.com/[table]/[column]/[value] : responds with JSON serialized data representing all rows with the specified "value" in the specified column
 
 Examples of how this works can be found in the "tests.sh" file, which is an executable shell script that runs tests on a known DB with expected responses.
 

@@ -93,7 +93,7 @@ def api_handler(data, api_info):
     col_names = [] # pull out the actual column names
     for item in cols:
         col_names.append(item[0])
-    print info
+
     if len(info) == 1:
         return safe_db_query_to_json (table_rows (table), col_names, db)
     if len(info) == 2:
@@ -106,6 +106,16 @@ def api_handler(data, api_info):
                                       col_names, db)
 
 def safe_db_query_to_json (escaped_query, cols, db):
+    """
+    @author Blakely Madden
+    @date 2014-04-08
+    @purpose expects an escaped string that is executed as a query to the DB.
+     Makes JSON serialized data from the response
+    @args escaped_query [string], cols [list], db [MySQLdb.connection]
+    @return list of dictionaries
+    @exceptions Exception
+    @can_block False
+    """
     try:
         data = db.execute_db_command(escaped_query)
     except Exception as e:
@@ -114,11 +124,29 @@ def safe_db_query_to_json (escaped_query, cols, db):
     return make_json_objs (data, cols)
 
 def invalid_request(query, exception):
+    """
+    @author Blakely Madden
+    @date 2014-04-08
+    @purpose print an error message based on the exception
+    @args query [string], exception [Exception]
+    @return empty string
+    @exceptions None
+    @can_block False
+    """
     print "Invalid SQL query request: \"%s\" Ignoring... \nError: "\
         % query + exception.message
     return ""
 
 def make_json_objs (all_data, cols):
+    """
+    @author Blakely Madden
+    @date 2014-04-08
+    @purpose make JSON objects and return them in a list
+    @args all_data [list], cols [list]
+    @return list of dictionaries
+    @exceptions Exception
+    @can_block False
+    """
     data = []
     temp_dict = {}
     for row in all_data:
@@ -129,9 +157,28 @@ def make_json_objs (all_data, cols):
     return data
 
 def all_values_in_column (table, field):
+    """
+    @author Blakely Madden
+    @date 2014-04-08
+    @purpose get a query string for the values in a specific column
+    @args table [string], field [string]
+    @return string
+    @exceptions None
+    @can_block False
+    """
     return "SELECT %s from %s" % (field, table)
-
+p
 def rows_matching_table_field_val(table, field, val):
+    """
+    @author Blakely Madden
+    @date 2014-04-08
+    @purpose get a query string for the rows in a table with the column,
+     "field", and the value, "val"
+    @args table [string], field [string], val [string]
+    @return string
+    @exceptions None
+    @can_block False
+    """
     return "SELECT * FROM %s WHERE %s = %s" % (table, field, val)
 
 def table_rows(table):
@@ -139,9 +186,10 @@ def table_rows(table):
     @author Blakely Madden
     @date 2014-02-24
     @updated 2014-03-19
+     2014-04-08
     @purpose corresponds to the API call for a column of data from a table
-    @args table [string], api_info [APIInfo]
-    @return list [string]
+    @args table [string], field [string], val [string]
+    @return string
     @exceptions None
     @can_block False
     """
