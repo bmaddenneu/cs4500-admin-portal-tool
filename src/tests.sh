@@ -31,6 +31,7 @@ $GET"Attacks" && \ # empty table
     $GET"User_Details" && \
     $GET"Interactions/user_id" && \
     $GET"Interactions/user_id/117" && \
+    $GET"Interactions/user_id/3333" && \ # non-existent user
     $GET"Interactions/attribute_5" && \
     echo Requests Succeeded || echo Requests Failed
 
@@ -46,6 +47,7 @@ $STAT"GL_VPAL_Attacks" | grep "regular file" && \
     $STAT"user_id" | grep "regular file" && \
     $STAT"attribute_5" | grep "regular file" && \
     $STAT"117" | grep "regular file" && \
+    $STAT"3333" | grep "regular file" && \
     echo Responses Succeeded || echo Responses Failed
 
 echo
