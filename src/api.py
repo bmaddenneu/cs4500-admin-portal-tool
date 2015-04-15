@@ -167,7 +167,7 @@ def all_values_in_column (table, field):
     @can_block False
     """
     return "SELECT %s from %s" % (field, table)
-p
+
 def rows_matching_table_field_val(table, field, val):
     """
     @author Blakely Madden
