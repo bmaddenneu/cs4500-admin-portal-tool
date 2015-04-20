@@ -1,6 +1,12 @@
 admin portal tool project for cs4500
 
-I'll go over the proper usage in detail
+run "make executable" in the src directory in order to make everything executable
+run "make test" to run the test script
+run "make run" to start the server with the default configuration (configurable via the run.sh shell script)
+
+the "run.sh" script is a configurable run script, which can be run with no arguments, that wraps the formal usage
+
+I'll go over the formal usage in detail
 
 ./main.py [port] [host] [db_port] [user] [pw] [db]
 
@@ -13,15 +19,18 @@ db: the name of the MySQL database that the server will hook to
 
 example: "./main.py 10003 localhost 3306 user password my_mysql_database_name
 
+these arguemnts correspond to the environment variables in the run script, which can be configured according to what you want to call main with
+
 API Calls:
  - example.com/[table] : responds wth JSON serialized data representing the entire table in the DB (this is mostly for development and debugging purposes. use sparingly)
  - example.com/[table]/[column] : responds with JSON serialized data representing the value specified column's value for each row of the table
  - example.com/[table]/[column]/[value] : responds with JSON serialized data representing all rows with the specified "value" in the specified column
 
-Examples of how this works can be found in the "tests.sh" file, which is an executable shell script that runs tests on a known DB with expected responses.
+where "example.com" is the host:port combination of this server (ie: if you are testing on the same machine you are running on, with the default configuration in "run.sh", this will be "localhost:10009". If you are testing from an outside machine, this will be the host:port combination of the server where the main script is executing - something like "192.168.1.1:10009")
+
+Complete examples of how this works can be found in the "tests.sh" file, which is an executable shell script that runs tests on a known DB with expected responses.
 
 Usage for this test script:
 ./test.sh
 
-All source code is extensively documented, so nothing should be unclear.
-
+All source code is extensively documented, so hopefully nothing is unclear.
